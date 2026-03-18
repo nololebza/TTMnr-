@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TTOFFICE Store – Digital Products & Services</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --dark: #0A0A0F;
+    --dark2: #12121A;
+    --dark3: #1C1C28;
+    --white: #F4F2EE;
+    --muted: #8A8A9A;
+    --accent: #4CAAFF;
+    --green: #5DD68B;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--dark); color: var(--white); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+
+  /* NOISE */
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E"); opacity: 0.03; pointer-events: none; z-index: 9999; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1rem 3rem; background: rgba(10,10,15,0.92); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(201,168,76,0.15); }
+  .nav-logo { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; }
+  .nav-brand { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.12em; color: var(--white); }
+  .nav-brand span { color: var(--gold); }
+  .nav-sub { font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; }
+  .nav-right { display: flex; align-items: center; gap: 1.5rem; }
+  .cart-btn { background: var(--gold); color: var(--dark); border: none; padding: 0.5rem 1.2rem; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.82rem; border-radius: 2px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: background 0.3s; }
+  .cart-btn:hover { background: var(--gold-light); }
+  .cart-count { background: var(--dark); color: var(--gold); border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; }
+
+  /* HERO */
+  .hero { padding: 8rem 3rem 4rem; text-align: center; position: relative; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 60%, rgba(201,168,76,0.07) 0%, transparent 70%); }
+  .hero-tag { display: inline-flex; align-items: center; gap: 0.5rem; font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(201,168,76,0.3); padding: 0.35rem 0.9rem; border-radius: 2px; margin-bottom: 1.5rem; }
+  .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.8rem, 6vw, 5.5rem); letter-spacing: 0.04em; line-height: 0.95; margin-bottom: 1rem; }
+  .hero h1 em { font-style: normal; color: var(--gold); }
+  .hero p { color: var(--muted); font-size: 1rem; max-width: 560px; margin: 0 auto 2rem; line-height: 1.8; font-weight: 300; }
+  .filter-bar { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; position: relative; z-index: 2; }
+  .filter-btn { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); border: 1px solid rgba(255,255,255,0.1); background: transparent; padding: 0.4rem 1rem; border-radius: 2px; cursor: pointer; transition: all 0.3s; }
+  .filter-btn.active, .filter-btn:hover { color: var(--gold); border-color: var(--gold); background: rgba(201,168,76,0.06); }
+
+  /* PRODUCTS */
+  .products-section { padding: 4rem 3rem; }
+  .section-label { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; }
+  .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 0.04em; margin-bottom: 2.5rem; }
+  .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 1.5rem; }
+
+  /* PRODUCT CARD */
+  .product-card { background: var(--dark2); border: 1px solid rgba(201,168,76,0.08); border-radius: 4px; overflow: hidden; transition: transform 0.3s, border-color 0.3s; display: flex; flex-direction: column; }
+  .product-card:hover { transform: translateY(-5px); border-color: rgba(201,168,76,0.3); }
+  .product-thumb { height: 180px; display: flex; align-items: center; justify-content: center; font-size: 4rem; position: relative; overflow: hidden; }
+  .product-badge { position: absolute; top: 12px; right: 12px; font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.2rem 0.5rem; border-radius: 2px; }
+  .badge-hot { background: #FF4C4C; color: white; }
+  .badge-new { background: var(--accent); color: white; }
+  .badge-digital { background: var(--green); color: var(--dark); }
+  .badge-service { background: var(--gold); color: var(--dark); }
+  .product-body { padding: 1.4rem; flex: 1; display: flex; flex-direction: column; }
+  .product-category { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+  .product-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.05em; margin-bottom: 0.6rem; line-height: 1.2; }
+  .product-desc { font-size: 0.83rem; color: var(--muted); line-height: 1.7; font-weight: 300; flex: 1; margin-bottom: 1.2rem; }
+  .product-footer { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+  .product-price { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--gold); letter-spacing: 0.05em; }
+  .product-price small { font-family: 'DM Sans', sans-serif; font-size: 0.65rem; color: var(--muted); display: block; line-height: 1; font-weight: 300; }
+  .add-to-cart { background: var(--gold); color: var(--dark); border: none; padding: 0.6rem 1.1rem; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.8rem; border-radius: 2px; cursor: pointer; transition: background 0.3s, transform 0.2s; white-space: nowrap; }
+  .add-to-cart:hover { background: var(--gold-light); transform: scale(1.03); }
+  .add-to-cart.added { background: var(--green); color: var(--dark); }
+
+  /* CART SIDEBAR */
+  .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+  .cart-overlay.open { opacity: 1; pointer-events: all; }
+  .cart-sidebar { position: fixed; top: 0; right: -440px; width: 420px; max-width: 95vw; height: 100vh; background: var(--dark2); z-index: 201; transition: right 0.4s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; border-left: 1px solid rgba(201,168,76,0.15); }
+  .cart-sidebar.open { right: 0; }
+  .cart-header { padding: 1.5rem; border-bottom: 1px solid rgba(201,168,76,0.12); display: flex; justify-content: space-between; align-items: center; }
+  .cart-header h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.08em; }
+  .close-cart { background: none; border: 1px solid rgba(255,255,255,0.1); color: var(--white); width: 34px; height: 34px; border-radius: 2px; cursor: pointer; font-size: 1.1rem; transition: border-color 0.3s; }
+  .close-cart:hover { border-color: var(--gold); color: var(--gold); }
+  .cart-items { flex: 1; overflow-y: auto; padding: 1.2rem; display: flex; flex-direction: column; gap: 1rem; }
+  .cart-empty { text-align: center; padding: 3rem 1rem; color: var(--muted); }
+  .cart-empty-icon { font-size: 3rem; display: block; margin-bottom: 1rem; }
+  .cart-item { background: var(--dark3); border: 1px solid rgba(201,168,76,0.08); border-radius: 4px; padding: 1rem; display: flex; gap: 1rem; align-items: flex-start; }
+  .cart-item-icon { font-size: 2rem; flex-shrink: 0; }
+  .cart-item-info { flex: 1; }
+  .cart-item-name { font-weight: 600; font-size: 0.88rem; margin-bottom: 0.2rem; }
+  .cart-item-price { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--gold); }
+  .cart-item-remove { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; transition: color 0.3s; padding: 0; }
+  .cart-item-remove:hover { color: #FF4C4C; }
+  .cart-footer { padding: 1.5rem; border-top: 1px solid rgba(201,168,76,0.12); }
+  .cart-total { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+  .cart-total-label { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .cart-total-amount { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--gold); }
+
+  /* CHECKOUT MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 1rem; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--dark2); border: 1px solid rgba(201,168,76,0.2); border-radius: 6px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; }
+  .modal-header { padding: 1.5rem 1.5rem 1rem; border-bottom: 1px solid rgba(201,168,76,0.1); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--dark2); }
+  .modal-header h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.08em; }
+  .modal-body { padding: 1.5rem; }
+  .form-group { margin-bottom: 1.1rem; }
+  .form-group label { display: block; font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+  .form-group input, .form-group select { width: 100%; background: var(--dark3); border: 1px solid rgba(255,255,255,0.08); color: var(--white); padding: 0.75rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; border-radius: 2px; outline: none; transition: border-color 0.3s; }
+  .form-group input:focus, .form-group select:focus { border-color: var(--gold); }
+  .form-group input::placeholder { color: var(--muted); }
+  .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  /* PAYMENT METHODS */
+  .payment-section { margin-top: 1.5rem; }
+  .payment-title { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+  .payment-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.2rem; }
+  .payment-method { background: var(--dark3); border: 2px solid rgba(255,255,255,0.06); border-radius: 4px; padding: 0.9rem; cursor: pointer; transition: border-color 0.3s; text-align: center; }
+  .payment-method.selected { border-color: var(--gold); background: rgba(201,168,76,0.06); }
+  .payment-method-icon { font-size: 1.6rem; display: block; margin-bottom: 0.3rem; }
+  .payment-method-name { font-weight: 600; font-size: 0.82rem; display: block; margin-bottom: 0.1rem; }
+  .payment-method-desc { font-size: 0.7rem; color: var(--muted); }
+
+  /* PAYMENT DETAIL PANELS */
+  .payment-detail { background: var(--dark3); border: 1px solid rgba(201,168,76,0.12); border-radius: 4px; padding: 1.2rem; margin-top: 1rem; display: none; }
+  .payment-detail.visible { display: block; }
+  .bank-detail { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem; }
+  .bank-detail:last-child { border-bottom: none; }
+  .bank-detail-label { color: var(--muted); font-size: 0.78rem; }
+  .bank-detail-value { font-weight: 600; font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--white); }
+  .copy-btn { background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2); color: var(--gold); padding: 0.2rem 0.5rem; font-size: 0.65rem; border-radius: 2px; cursor: pointer; font-family: 'Space Mono', monospace; letter-spacing: 0.05em; transition: background 0.3s; }
+  .copy-btn:hover { background: rgba(201,168,76,0.2); }
+  .payment-note { font-size: 0.78rem; color: var(--muted); margin-top: 0.75rem; line-height: 1.6; padding: 0.75rem; background: rgba(201,168,76,0.04); border-radius: 2px; border-left: 2px solid var(--gold); }
+
+  /* ORDER SUMMARY */
+  .order-summary { background: var(--dark3); border-radius: 4px; padding: 1rem; margin-bottom: 1.2rem; }
+  .order-summary-title { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.8rem; }
+  .order-line { display: flex; justify-content: space-between; font-size: 0.83rem; padding: 0.3rem 0; }
+  .order-line-total { display: flex; justify-content: space-between; font-weight: 700; padding-top: 0.75rem; margin-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.06); font-family: 'Space Mono', monospace; font-size: 0.85rem; }
+  .order-line-total span:last-child { color: var(--gold); }
+
+  /* BUTTONS */
+  .btn-full { width: 100%; background: var(--gold); color: var(--dark); border: none; padding: 1rem; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 1rem; letter-spacing: 0.05em; text-transform: uppercase; border-radius: 2px; cursor: pointer; transition: background 0.3s; margin-top: 1rem; }
+  .btn-full:hover { background: var(--gold-light); }
+  .btn-outline-full { width: 100%; background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.15); padding: 0.8rem; font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 0.9rem; border-radius: 2px; cursor: pointer; transition: border-color 0.3s; margin-top: 0.5rem; }
+  .btn-outline-full:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* SUCCESS */
+  .success-screen { display: none; text-align: center; padding: 3rem 2rem; }
+  .success-screen.visible { display: block; }
+  .success-icon { font-size: 4rem; margin-bottom: 1rem; }
+  .success-screen h3 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--green); margin-bottom: 0.75rem; letter-spacing: 0.05em; }
+  .success-screen p { color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin-bottom: 0.5rem; }
+  .ref-code { font-family: 'Space Mono', monospace; font-size: 1.1rem; color: var(--gold); font-weight: 700; margin: 1rem 0; }
+
+  /* WHY BUY */
+  .why-section { padding: 4rem 3rem; background: var(--dark2); }
+  .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+  .why-card { background: var(--dark3); border: 1px solid rgba(201,168,76,0.08); border-radius: 4px; padding: 1.5rem; text-align: center; }
+  .why-icon { font-size: 2rem; display: block; margin-bottom: 0.75rem; }
+  .why-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.4rem; }
+  .why-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--green); color: var(--dark); padding: 0.75rem 1.5rem; border-radius: 4px; font-weight: 700; font-size: 0.88rem; z-index: 500; transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); white-space: nowrap; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* FOOTER */
+  footer { background: var(--dark2); border-top: 1px solid rgba(201,168,76,0.1); padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .footer-brand { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.1em; }
+  .footer-brand span { color: var(--gold); }
+  .footer-info { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--muted); text-align: center; line-height: 1.8; }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .hero, .products-section, .why-section { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .form-row-2 { grid-template-columns: 1fr; }
+    .payment-methods { grid-template-columns: 1fr 1fr; }
+    footer { padding: 1.5rem; flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div>
+      <div class="nav-brand"><span>TT</span>OFFICE</div>
+      <div class="nav-sub">Online Store</div>
+    </div>
+  </a>
+  <div class="nav-right">
+    <button class="cart-btn" onclick="openCart()">
+      🛒 Cart <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div style="position:relative;z-index:2;">
+    <div class="hero-tag">📦 Instant Delivery · South Africa</div>
+    <h1>Digital Products<br>& <em>Services</em></h1>
+    <p>Buy directly from TTOFFICE (PTY) LTD — digital products, templates, consultancy packages and print orders delivered instantly. Pay via EFT, PayShap, or cash deposit.</p>
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-btn active" onclick="filterProducts('all', this)">All Products</button>
+      <button class="filter-btn" onclick="filterProducts('digital', this)">📄 Digital</button>
+      <button class="filter-btn" onclick="filterProducts('print', this)">🖨️ Print & Design</button>
+      <button class="filter-btn" onclick="filterProducts('consultancy', this)">📋 Consultancy</button>
+      <button class="filter-btn" onclick="filterProducts('training', this)">🎓 Training</button>
+      <button class="filter-btn" onclick="filterProducts('beauty', this)">💇 Beauty</button>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products-section">
+  <div class="section-label">Best Sellers · Matched to TTOFFICE Profile</div>
+  <div class="section-title">Shop All Products</div>
+  <div class="products-grid" id="productsGrid">
+
+    <!-- DIGITAL PRODUCTS -->
+    <div class="product-card" data-category="digital">
+      <div class="product-thumb" style="background: linear-gradient(135deg, #1a1a2e, #16213e);">
+        📊
+        <span class="product-badge badge-hot">🔥 Best Seller</span>
+      </div>
+      <div class="product-body">
+        <div class="product-category">Digital · Instant Download</div>
+        <div class="product-name">Business Registration Starter Pack</div>
+        <p class="product-desc">Complete CIPC registration guide, SARS tax number checklist, POPIA compliance template, and B-BBEE affidavit instructions. Ideal for new entrepreneurs.</p>
+        <div class="product-footer">
+          <div class="product-price">R149<small>instant download</small></div>
+          <button class="add-to-cart" onclick="addToCart('Business Registration Starter Pack', 149, '📊', this)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-category="digital">
+      <div class="product-thumb" style="background: linear-gradient(135deg, #0f2027, #203a43);">
+        🤖
+        <span class="product-badge badge-new">✨ New</span>
+      </div>
+      <div class="product-body">
+        <div class="product-category">Digital · AI Tools</div>
+        <div class="product-name">AI Business Tools Bundle</div>
+        <p class="product-desc">10 ready-to-use AI prompt templates for social media, customer service, business plans, and email marketing. Built for South African SMEs.</p>
+        <div class="product-footer">
+          <div class="product-price">R199<small>instant download</small></div>
+          <button class="add-to-cart" onclick="addToCart('AI Business Tools Bundle', 199, '🤖', this)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-category="digital">
+      <div class="product-thumb" style="background: linear-gradient(135deg, #1a1a1a, #2d2d2d);">
+        📑
+        <span class="product-badge badge-digital">Digital</span>
+      </div>
+      <div class="product-body">
+        <div class="product-category">Digital · Templates</div>
+        <div class="product-name">Tender Ready Document Pack</div>
+        <p class="product-desc">Professional company profile template, capability statement, tax clearance checklist and CSD registration guide. Get government-tender ready fast.</p>
+        <div class="product-footer">
+          <div class="product-price">R249<small>instant download</small></div>
+          <button class="add-to-cart" onclick="addToCart('Tender Ready Document Pack', 249, '📑', this)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-category="digital">
+      <div class="product-thumb" style="background: linear-gradient(135deg, #1a2a1a, #1e3a1e);">
+        💰
+        <span class="product-badge badge-hot">🔥 Popular</span>
+      </div>
+      <div class="product-body">
+        <div class="product-category">Digital · Finance</div>
+        <div class="product-name">Small Business Finance Spreadsheet</div>
+        <p class="product-desc">Pre-built Excel budget tracker, income statement, cash flow forecast, and invoice template. Designed for South African micro-businesses and freelancers.</p>
+        <div class="product-footer">
+          <div class="product-price">R129<small>instant download</small></div>
+          <button class="add-to-cart" onclick="addToCart('Small Business Finance Spreadsheet', 129, '💰', this)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-category="digital">
+      <div class="product-thumb" style="background: linear-gradient(135deg, #2a1a2a, #3a1e3a);">
+        📱
+        <span class="product-badge badge-new">✨ New</span>
+      </div>
+      <div class="product-body">
+        <div class="product-category">Digital · Social Media</div>
+        <div class="product-name">30-Day Social Media Content Pack</div>
+        <p class="product-desc">30 editable Canva templates for Facebook & Instagram posts. Includes captions, hashtags, and a posting schedule. Branded for SA businesses.</p>
+        <div class="product-footer">
+          <div class="product-price">R179<small>instant download</small></div>
+          <button class="add-to-cart" onclick="addToCart('30-Day Social Media Content Pack', 179, '📱', this)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRINT & DESIGN -->
+    <div class="product-card" data-category="print">
+      <div class="product-thumb" style="background: linear-gradient(135deg, #2a1a0a, #3d2a0a);">
+        👕
+        <span class="product-badge badge-hot">🔥 Top Seller</span>
+      </div>
+      <div class="product-body">
+        <div class="product-category">Print & Design · T-Shirt Printing</div>
+        <div class="product-name">Custom T-Shirt Print (1 shirt)</div>
+        <p class="product-desc">Full-colour custom print on quality T-shirt using our heat press combo. Upload your design at checkout. Collection at Ivory Park or courier available.</p>
+        <div class="product-footer">
+          <div class="product-price">R180<small>per shirt + courier</small></div>
+          <button class="add-to-cart" onclick="addToCart('Custom T-Shirt Print (1 shirt)', 180, '👕', this)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-category="print">
+      <div class="product-thumb" style="background: linear-gradient(135deg, #1a2a2a, #0a2a2a);">
+        🖨️
+        <span class="product-badge badge-service">Service</span>
+      </div>
+      <div class="product-body">
+        <div class="product-category">Print · Document Printing</div>
+        <div class="product-name">Document Print Pack (50 pages)</div>
+        <p class="product-desc">50 A4 black & white or colour prints. Email your documents to <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ff8b8b909999969c9ac8ccc6cbbf98929e9693d19c9092">[email&#160;protected]</a> after checkout. Collection at our Ivory Park office.</p>
+        <div class="product-footer">
+          <div class="product-price">R85<small>50 pages A4</small></div>
+          <button class="add-to-cart" onclick="addToCart('Document Print Pack (50 pages)', 85, '🖨️', this)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-category="print">
+      <div class="product-thumb" style="background: linear-gradient(135deg, #2a2a1a, #3a3a10);">
+        🎨
+        <span class="product-badge badge-new">✨ New</span>
+      </div>
+      <div class="product-body">
+        <div class="product-category">Design · Branding</div>
+        <div class="product-name">Logo & Business Card Design</div>
+        <p class="product-desc">Professional logo design + business card layout. Delivered as print-ready PDF and PNG files within 3 business days. Unlimited revisions included.</p>
+        <div class="product-footer">
+          <div class="product-price">R450<small>3 day turnaround</small></div>
+          <button class="add-to-cart" onclick="addToCart('Logo & Business Card Design', 450, '🎨', this)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONSULTANCY -->
+    <div class="product-card" data-category="consultancy">
+      <div class="product-thumb" style="background: linear-gradient(135deg, #1a1a2e, #2a2a4e);">
+        📋
+        <span class="product-badge badge-hot">🔥 Popular</span>
+      </div>
+      <div class="product-body">
+        <div class="product-category">Consultancy · SARS</div>
+        <div class="product-name">SARS Tax Number Registration</div>
+        <p class="product-desc">We handle your SARS income tax registration from start to finish. Includes document preparation, submission, and follow-up. Done within 5 business days.</p>
+        <div class="product-footer">
+          <div class="product-price">R350<small>full service</small></div>
+          <button class="add-to-cart" onclick="addToCart('SARS Tax Number Registration', 350, '📋', this)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-category="consultancy">
+      <div class="product-thumb" style="background: linear-gradient(135deg, #1a2a1a, #2a3a2a);">
+        🏫
+        <span class="product-badge badge-service">Service</span>
+      </div>
+      <div class="product-body">
+        <div class="product-category">Consultancy · Education</div>
+        <div class="product-name">University/College Registration Assist</div>
+        <p class="product-desc">Full support applying to NSFAS, university or TVET college applications. We check eligibility, prepare documents, and submit on your behalf.</p>
+        <div class="product-footer">
+          <div class="product-price">R250<small>per application</small></div>
+          <button class="add-to-cart" onclick="addToCart('University/College Registration Assist', 250, '🏫', this)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-category="consultancy">
+      <div class="product-thumb" style="background: linear-gradient(135deg, #2a1a1a, #3a2a1a);">
+        📲
+        <span class="product-badge badge-new">✨ New</span>
+      </div>
+      <div class="product-body">
+        <div class="product-category">Consultancy · Social Media</div>
+        <div class="product-name">Social Media Setup Package</div>
+        <p class="product-desc">Full Facebook Business Page and Instagram Business account setup. Includes profile design, bio writing, first 5 posts, and WhatsApp Business setup.</p>
+        <div class="product-footer">
+          <div class="product-price">R499<small>once-off setup</small></div>
+          <button class="add-to-cart" onclick="addToCart('Social Media Setup Package', 499, '📲', this)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRAINING -->
+    <div class="product-card" data-category="training">
+      <div class="product-thumb" style="background: linear-gradient(135deg, #0a1a2a, #1a2a3a);">
+        💻
+        <span class="product-badge badge-hot">🔥 Best Seller</span>
+      </div>
+      <div class="product-body">
+        <div class="product-category">Training · Digital Literacy</div>
+        <div class="product-name">Basic Computer Skills Course</div>
+        <p class="product-desc">In-person or remote training covering email, MS Word, Excel, internet browsing, and WhatsApp Business. Certificate of completion included. 1-day session.</p>
+        <div class="product-footer">
+          <div class="product-price">R299<small>per person</small></div>
+          <button class="add-to-cart" onclick="addToCart('Basic Computer Skills Course', 299, '💻', this)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-category="training">
+      <div class="product-thumb" style="background: linear-gradient(135deg, #1a0a2a, #2a1a3a);">
+        🤖
+        <span class="product-badge badge-new">✨ New</span>
+      </div>
+      <div class="product-body">
+        <div class="product-category">Training · AI</div>
+        <div class="product-name">Intro to AI for Business Workshop</div>
+        <p class="product-desc">Half-day workshop teaching small business owners how to use AI tools (ChatGPT, Canva AI, Google AI) to save time and grow their business. Group bookings welcome.</p>
+        <div class="product-footer">
+          <div class="product-price">R399<small>per person</small></div>
+          <button class="add-to-cart" onclick="addToCart('Intro to AI for Business Workshop', 399, '🤖', this)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BEAUTY -->
+    <div class="product-card" data-category="beauty">
+      <div class="product-thumb" style="background: linear-gradient(135deg, #2a1a1e, #3a1a2a);">
+        💇
+        <span class="product-badge badge-hot">🔥 Popular</span>
+      </div>
+      <div class="product-body">
+        <div class="product-category">Beauty · Hair Salon</div>
+        <div class="product-name">Hair Treatment Voucher</div>
+        <p class="product-desc">Prepaid gift voucher for any single hair treatment at TTOFFICE Beauty. Valid 6 months. Redeemable at Ivory Park salon. Perfect as a gift.</p>
+        <div class="product-footer">
+          <div class="product-price">R350<small>salon voucher</small></div>
+          <button class="add-to-cart" onclick="addToCart('Hair Treatment Voucher', 350, '💇', this)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-category="beauty">
+      <div class="product-thumb" style="background: linear-gradient(135deg, #1a2a2a, #2a3a3a);">
+        ✂️
+        <span class="product-badge badge-service">Service</span>
+      </div>
+      <div class="product-body">
+        <div class="product-category">Beauty · Booking</div>
+        <div class="product-name">Salon Appointment Deposit</div>
+        <p class="product-desc">Secure your salon appointment with a prepaid deposit. We'll confirm your date and time via WhatsApp after payment. Balance paid at the salon.</p>
+        <div class="product-footer">
+          <div class="product-price">R100<small>deposit · balance in store</small></div>
+          <button class="add-to-cart" onclick="addToCart('Salon Appointment Deposit', 100, '✂️', this)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- WHY SECTION -->
+<section class="why-section">
+  <div class="section-label">Why Shop With Us</div>
+  <div class="section-title">Trusted · Local · Registered</div>
+  <div class="why-grid">
+    <div class="why-card"><span class="why-icon">🏛️</span><div class="why-title">CIPC Registered</div><div class="why-desc">Reg. No. 2026/035955/07. Fully compliant South African private company.</div></div>
+    <div class="why-card"><span class="why-icon">⚡</span><div class="why-title">Instant Delivery</div><div class="why-desc">Digital products delivered to your email immediately after payment confirmed.</div></div>
+    <div class="why-card"><span class="why-icon">🌟</span><div class="why-title">B-BBEE Level 1</div><div class="why-desc">100% Black owned. Supporting your business supports transformation.</div></div>
+    <div class="why-card"><span class="why-icon">📞</span><div class="why-title">WhatsApp Support</div><div class="why-desc">Direct support via WhatsApp: 078 913 0633. Real people, fast responses.</div></div>
+    <div class="why-card"><span class="why-icon">💳</span><div class="why-title">SA Payment Methods</div><div class="why-desc">EFT, PayShap, and Cash Deposit. No card or foreign payment needed.</div></div>
+    <div class="why-card"><span class="why-icon">📍</span><div class="why-title">Local to Tembisa</div><div class="why-desc">Based in Ivory Park Ext 8, Midrand. Walk-in or collect available.</div></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand"><span>TT</span>OFFICE (PTY) LTD</div>
+  <div class="footer-info">
+    Reg. No. 2026/035955/07 · TAX: 9338878243 · B-BBEE Level 1<br>
+    <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="384c4c575e5e515b5d0f0b010c785f55595154165b5755">[email&#160;protected]</a> · 078 913 0633 · Ivory Park Ext 8, Tembisa
+  </div>
+  <div style="font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);">© 2026 TTOFFICE</div>
+</footer>
+
+<!-- CART OVERLAY -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h3>Your Cart</h3>
+    <button class="close-cart" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty"><span class="cart-empty-icon">🛒</span><p>Your cart is empty.<br>Add products to get started!</p></div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span class="cart-total-label">Total</span>
+      <span class="cart-total-amount" id="cartTotal">R0</span>
+    </div>
+    <button class="btn-full" onclick="openCheckout()">Proceed to Checkout →</button>
+    <button class="btn-outline-full" onclick="closeCart()">Continue Shopping</button>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Checkout</h3>
+      <button class="close-cart" onclick="closeCheckout()">✕</button>
+    </div>
+    <div class="modal-body" id="checkoutBody">
+      <!-- Order Summary -->
+      <div class="order-summary">
+        <div class="order-summary-title">Order Summary</div>
+        <div id="orderLines"></div>
+        <div class="order-line-total"><span>Total</span><span id="orderTotal">R0</span></div>
+      </div>
+
+      <!-- Customer Details -->
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" id="custName" placeholder="Your full name">
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>Email Address *</label>
+          <input type="email" id="custEmail" placeholder="email@example.com">
+        </div>
+        <div class="form-group">
+          <label>WhatsApp Number *</label>
+          <input type="tel" id="custPhone" placeholder="07X XXX XXXX">
+        </div>
+      </div>
+
+      <!-- Payment Methods -->
+      <div class="payment-section">
+        <div class="payment-title">Select Payment Method</div>
+        <div class="payment-methods">
+          <div class="payment-method selected" onclick="selectPayment('eft', this)">
+            <span class="payment-method-icon">🏦</span>
+            <span class="payment-method-name">EFT / Bank Transfer</span>
+            <span class="payment-method-desc">Instant or same-day</span>
+          </div>
+          <div class="payment-method" onclick="selectPayment('payshap', this)">
+            <span class="payment-method-icon">⚡</span>
+            <span class="payment-method-name">PayShap</span>
+            <span class="payment-method-desc">Instant payment</span>
+          </div>
+          <div class="payment-method" onclick="selectPayment('cash', this)">
+            <span class="payment-method-icon">💵</span>
+            <span class="payment-method-name">Cash Deposit</span>
+            <span class="payment-method-desc">At any ATM / branch</span>
+          </div>
+          <div class="payment-method" onclick="selectPayment('whatsapp', this)">
+            <span class="payment-method-icon">📱</span>
+            <span class="payment-method-name">WhatsApp Us</span>
+            <span class="payment-method-desc">Pay & confirm via chat</span>
+          </div>
+        </div>
+
+        <!-- EFT Details -->
+        <div class="payment-detail visible" id="detail-eft">
+          <div style="font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;">Bank Account Details</div>
+          <div class="bank-detail"><span class="bank-detail-label">Account Name</span><span class="bank-detail-value">TTOFFICE (PTY) LTD</span><button class="copy-btn" onclick="copyText('TTOFFICE (PTY) LTD')">Copy</button></div>
+          <div class="bank-detail"><span class="bank-detail-label">Bank</span><span class="bank-detail-value">Nedbank</span></div>
+          <div class="bank-detail"><span class="bank-detail-label">Account Number</span><span class="bank-detail-value">1335162887</span><button class="copy-btn" onclick="copyText('1335162887')">Copy</button></div>
+          <div class="bank-detail"><span class="bank-detail-label">Account Type</span><span class="bank-detail-value">Current Account (CA)</span></div>
+          <div class="bank-detail"><span class="bank-detail-label">Branch Code</span><span class="bank-detail-value">198765</span><button class="copy-btn" onclick="copyText('198765')">Copy</button></div>
+          <div class="bank-detail"><span class="bank-detail-label">Reference</span><span class="bank-detail-value" id="eftRef">TTO-000000</span><button class="copy-btn" onclick="copyText(document.getElementById('eftRef').textContent)">Copy</button></div>
+          <div class="payment-note">⚠️ Use your reference number as the payment reference. Send proof of payment to <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2e5a5a414848474d4b191d171a6e49434f4742004d4143">[email&#160;protected]</a> or WhatsApp 078 913 0633. Digital products delivered within 1 hour of payment confirmation.</div>
+        </div>
+
+        <!-- PayShap Details -->
+        <div class="payment-detail" id="detail-payshap">
+          <div style="font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;">PayShap Details</div>
+          <div class="bank-detail"><span class="bank-detail-label">ShapID / Phone</span><span class="bank-detail-value">078 913 0633</span><button class="copy-btn" onclick="copyText('0789130633')">Copy</button></div>
+          <div class="bank-detail"><span class="bank-detail-label">Account Name</span><span class="bank-detail-value">TTOFFICE PTY LTD</span></div>
+          <div class="bank-detail"><span class="bank-detail-label">Reference</span><span class="bank-detail-value" id="shapRef">TTO-000000</span><button class="copy-btn" onclick="copyText(document.getElementById('shapRef').textContent)">Copy</button></div>
+          <div class="payment-note">⚡ PayShap is instant. Open your banking app → PayShap → enter 078 913 0633. Send your name and reference via WhatsApp after payment.</div>
+        </div>
+
+        <!-- Cash Deposit -->
+        <div class="payment-detail" id="detail-cash">
+          <div style="font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;">Cash Deposit Instructions</div>
+          <div class="bank-detail"><span class="bank-detail-label">Account Name</span><span class="bank-detail-value">TTOFFICE (PTY) LTD</span></div>
+          <div class="bank-detail"><span class="bank-detail-label">Bank</span><span class="bank-detail-value">Nedbank</span></div>
+          <div class="bank-detail"><span class="bank-detail-label">Account Number</span><span class="bank-detail-value">1335162887</span><button class="copy-btn" onclick="copyText('1335162887')">Copy</button></div>
+          <div class="bank-detail"><span class="bank-detail-label">Account Type</span><span class="bank-detail-value">Current Account (CA)</span></div>
+          <div class="bank-detail"><span class="bank-detail-label">Branch Code</span><span class="bank-detail-value">198765</span><button class="copy-btn" onclick="copyText('198765')">Copy</button></div>
+          <div class="bank-detail"><span class="bank-detail-label">Reference</span><span class="bank-detail-value" id="cashRef">TTO-000000</span></div>
+          <div class="payment-note">💵 Deposit at any bank branch or ATM. WhatsApp your deposit slip photo to 078 913 0633 with your reference number to confirm your order.</div>
+        </div>
+
+        <!-- WhatsApp -->
+        <div class="payment-detail" id="detail-whatsapp">
+          <div style="font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;">WhatsApp Order</div>
+          <div class="payment-note" style="margin-top:0;">📱 Message us on WhatsApp at <strong>078 913 0633</strong> with your order details and we'll send you payment instructions directly. Fastest option for first-time buyers!</div>
+          <a href="https://wa.me/27789130633" target="_blank" style="display:block;margin-top:1rem;background:#25D366;color:white;text-align:center;padding:0.75rem;border-radius:4px;text-decoration:none;font-weight:700;font-size:0.9rem;">Open WhatsApp Chat →</a>
+        </div>
+      </div>
+
+      <button class="btn-full" onclick="placeOrder()">✅ Confirm Order & Get Payment Details</button>
+      <button class="btn-outline-full" onclick="closeCheckout()">← Back to Cart</button>
+    </div>
+
+    <!-- SUCCESS SCREEN -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">🎉</div>
+      <h3>Order Confirmed!</h3>
+      <p>Thank you for your order. Your reference number is:</p>
+      <div class="ref-code" id="successRef">TTO-000000</div>
+      <p>Please complete your payment using the details provided and send proof to:</p>
+      <p><strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c3b7b7aca5a5aaa0a6f4f0faf783a4aea2aaafeda0acae">[email&#160;protected]</a></strong> or WhatsApp <strong>078 913 0633</strong></p>
+      <p style="margin-top:1rem;">Digital products will be delivered to your email within <strong>1 hour</strong> of payment confirmation. Physical services will be scheduled via WhatsApp.</p>
+      <button class="btn-full" onclick="resetStore()" style="margin-top:1.5rem;">Continue Shopping</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ Added to cart!</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  let cart = [];
+  let selectedPayment = 'eft';
+
+  function generateRef() {
+    return 'TTO-' + Math.floor(100000 + Math.random() * 900000);
+  }
+
+  function addToCart(name, price, icon, btn) {
+    const existing = cart.find(i => i.name === name);
+    if (existing) { existing.qty++; }
+    else { cart.push({ name, price, icon, qty: 1 }); }
+    updateCartCount();
+    btn.textContent = '✓ Added!';
+    btn.classList.add('added');
+    setTimeout(() => { btn.textContent = 'Add to Cart'; btn.classList.remove('added'); }, 1500);
+    showToast('✅ ' + name.substring(0, 25) + '... added!');
+    renderCart();
+  }
+
+  function removeFromCart(name) {
+    cart = cart.filter(i => i.name !== name);
+    updateCartCount();
+    renderCart();
+    updateOrderSummary();
+  }
+
+  function updateCartCount() {
+    const count = cart.reduce((a, i) => a + i.qty, 0);
+    document.getElementById('cartCount').textContent = count;
+  }
+
+  function getTotal() {
+    return cart.reduce((a, i) => a + i.price * i.qty, 0);
+  }
+
+  function renderCart() {
+    const container = document.getElementById('cartItems');
+    if (cart.length === 0) {
+      container.innerHTML = '<div class="cart-empty"><span class="cart-empty-icon">🛒</span><p>Your cart is empty.<br>Add products to get started!</p></div>';
+    } else {
+      container.innerHTML = cart.map(item => `
+        <div class="cart-item">
+          <div class="cart-item-icon">${item.icon}</div>
+          <div class="cart-item-info">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-price">R${item.price} × ${item.qty} = R${item.price * item.qty}</div>
+          </div>
+          <button class="cart-item-remove" onclick="removeFromCart('${item.name.replace(/'/g,"\\'")}')">✕</button>
+        </div>
+      `).join('');
+    }
+    document.getElementById('cartTotal').textContent = 'R' + getTotal();
+  }
+
+  function openCart() {
+    document.getElementById('cartSidebar').classList.add('open');
+    document.getElementById('cartOverlay').classList.add('open');
+  }
+
+  function closeCart() {
+    document.getElementById('cartSidebar').classList.remove('open');
+    document.getElementById('cartOverlay').classList.remove('open');
+  }
+
+  function openCheckout() {
+    if (cart.length === 0) { showToast('⚠️ Your cart is empty!'); return; }
+    closeCart();
+    updateOrderSummary();
+    const ref = generateRef();
+    document.getElementById('eftRef').textContent = ref;
+    document.getElementById('shapRef').textContent = ref;
+    document.getElementById('cashRef').textContent = ref;
+    document.getElementById('successRef').textContent = ref;
+    document.getElementById('checkoutModal').classList.add('open');
+    document.getElementById('checkoutBody').style.display = 'block';
+    document.getElementById('successScreen').classList.remove('visible');
+  }
+
+  function closeCheckout() {
+    document.getElementById('checkoutModal').classList.remove('open');
+  }
+
+  function updateOrderSummary() {
+    const lines = document.getElementById('orderLines');
+    lines.innerHTML = cart.map(i => `<div class="order-line"><span>${i.icon} ${i.name}</span><span>R${i.price * i.qty}</span></div>`).join('');
+    document.getElementById('orderTotal').textContent = 'R' + getTotal();
+  }
+
+  function selectPayment(method, el) {
+    selectedPayment = method;
+    document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+    el.classList.add('selected');
+    document.querySelectorAll('.payment-detail').forEach(d => d.classList.remove('visible'));
+    document.getElementById('detail-' + method).classList.add('visible');
+  }
+
+  function placeOrder() {
+    const name = document.getElementById('custName').value.trim();
+    const email = document.getElementById('custEmail').value.trim();
+    const phone = document.getElementById('custPhone').value.trim();
+    if (!name || !email || !phone) { showToast('⚠️ Please fill in all fields!'); return; }
+    document.getElementById('checkoutBody').style.display = 'none';
+    document.getElementById('successScreen').classList.add('visible');
+  }
+
+  function resetStore() {
+    cart = [];
+    updateCartCount();
+    renderCart();
+    closeCheckout();
+  }
+
+  function filterProducts(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.product
